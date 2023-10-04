@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/MonsterKiller/main.cpp
+iostream
+-
+cstdlib
+-
+string
+-
+vector
+-
+climits
+-
+ctime
+-
+
