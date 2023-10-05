@@ -129,7 +129,6 @@ protected:
     int price;
     string description;
     string commodityName;
-	int amount;
 
 public:
     ~Commodity() = default;
@@ -144,14 +143,7 @@ public:
         this->commodityName = commodityName;
         this->description = description;
     }
-	void addamount()
-	{
-		amount++;
-	}
-	int readamount()
-	{
-		return amount;
-	}
+    
     /*
      * This method will show the full information of the commodity to user interface.
      * There is a overloading version, with an argument amount which will output the information with the amount
@@ -227,7 +219,13 @@ class phone:public Commodity{
 		int capacity;
 		int monitor;
 	public:
-		void phonedetail()
+		~phone() = default;
+		phone(){
+			pixel=0;
+			capacity=0;
+			monitor=0;
+		}
+		void detail() override
 		{
 			cout << commodityName << endl;
         	cout << "price: " << price << endl;
@@ -237,7 +235,7 @@ class phone:public Commodity{
 			cout<<"Monitor:"<<monitor<<"¦T"<<endl; 
 			cout << "----------------------------" << endl;
 		}
-		void phonedetail(int amount)
+		void detail(int amount) override
 		{
 			cout << commodityName << endl;
         	cout << "price: " << price << endl;
@@ -248,7 +246,7 @@ class phone:public Commodity{
 			cout<<"x"<<amount<<endl;
 			cout << "----------------------------" << endl;
 		}
-		void phoneuserSpecifiedCommodity() 
+		void userSpecifiedCommodity() override
 		{
 	        cout << "Please input the commodity name:" << endl;
 	        commodityName = InputHandler::readWholeLine();
@@ -263,7 +261,7 @@ class phone:public Commodity{
 			cout<<"What is the size of the phone:"<<endl;
 			monitor=InputHandler::numberInput();
     	}
-    	void save(fstream&file)override
+    	void save(fstream& file) override
     	{
     		file<<commodityName<<endl;
     		file<<price<<endl;
@@ -272,9 +270,9 @@ class phone:public Commodity{
     		file<<capacity<<endl;
     		file<<monitor<<endl;
 		}
-		void load(fstream&file)override
+		void load(fstream& file) override
 		{
-			commodityName = InputHandler::readWholeLine(file);
+			getline(file, commodityName);
 			file>>price;
 			description = InputHandler::readWholeLine(file);
 			file>>pixel>>capacity>>monitor;
@@ -285,8 +283,11 @@ class clothes:public Commodity{
 		string kind;
 		string color;
 		string size;
+		
 	public:
-		void clothesdetail()
+		~clothes() = default;
+		
+		void detail() override
 		{
 			cout << commodityName << endl;
         	cout << "price: " << price << endl;
@@ -296,7 +297,7 @@ class clothes:public Commodity{
 			cout<<"Size:"<<size<<endl; 
 			cout << "----------------------------" << endl;
 		}
-		void clothesdetail(int amount)
+		void detail(int amount) override
 		{
 			cout << commodityName << endl;
         	cout << "price: " << price << endl;
@@ -307,7 +308,7 @@ class clothes:public Commodity{
 			cout<<"x"<<amount<<endl;
 			cout << "----------------------------" << endl;
 		}
-		void clothesuserSpecifiedCommodity() 
+		void userSpecifiedCommodity() override
 		{
 	        cout << "Please input the commodity name:" << endl;
 	        commodityName = InputHandler::readWholeLine();
@@ -322,7 +323,7 @@ class clothes:public Commodity{
 			cout<<"What is the size of the clothes:"<<endl;
 			size=InputHandler::readWholeLine();
     	}
-    	void save(fstream&file)override
+    	void save(fstream& file) override
     	{
     		file<<commodityName<<endl;
     		file<<price<<endl;
@@ -331,9 +332,9 @@ class clothes:public Commodity{
     		file<<color<<endl;
     		file<<size<<endl;
 		}
-		void load(fstream&file)override
+		void load(fstream& file) override
 		{
-			commodityName = InputHandler::readWholeLine(file);
+			getline(file, commodityName);
 			file>>price;
 			description = InputHandler::readWholeLine(file);
 			kind=InputHandler::readWholeLine(file);
@@ -347,7 +348,9 @@ class swatch:public Commodity{
 		string color1;
 		int weight;
 	public:
-		void swatchdetail()
+		~swatch() = default;
+		
+		void detail() override
 		{
 			cout << commodityName << endl;
         	cout << "price: " << price << endl;
@@ -357,7 +360,7 @@ class swatch:public Commodity{
 			cout << "description: " << description << endl; 
 			cout << "----------------------------" << endl;
 		}
-		void swatchddetail(int amount)
+		void detail(int amount) override
 		{
 			cout << commodityName << endl;
         	cout << "price: " << price << endl;
@@ -368,7 +371,7 @@ class swatch:public Commodity{
 			cout<<"x"<<amount<<endl; 
 			cout << "----------------------------" << endl;
 		}
-		void swatchuserSpecifiedCommodity() 
+		void userSpecifiedCommodity() override
 		{
 	        cout << "Please input the commodity name:" << endl;
 	        commodityName = InputHandler::readWholeLine();
@@ -383,18 +386,18 @@ class swatch:public Commodity{
 			cout<<"What is the weight of the swatch:"<<endl;
 			weight=InputHandler::numberInput();
     	}
-    	void save(fstream&file)override
+    	void save(fstream& file) override
     	{
-    		file<<commodityName<<endl;
-    		file<<price<<endl;
-    		file<<description<<endl;
-    		file<<material<<endl;
-    		file<<color1<<endl;
-    		file<<weight<<endl;
+    		file<<commodityName<<endl
+    			<<price<<endl
+    			<<description<<endl
+    			<<material<<endl
+    			<<color1<<endl
+    			<<weight<<endl;
 		}
-		void load(fstream&file)override
+		void load(fstream& file) override
 		{
-			commodityName = InputHandler::readWholeLine(file);
+			getline(file, commodityName);
 			file>>price;
 			description = InputHandler::readWholeLine(file);
 			material=InputHandler::readWholeLine(file);
@@ -402,6 +405,7 @@ class swatch:public Commodity{
 			file>>weight;
 		}
 };
+
 /*
  * [YOU NEED TO FINISH THIS CLASS]
  * This is a list storing the existing commodity in the store.
@@ -430,21 +434,18 @@ public:
 				for(int i=0;i<len;i++){
 					Commodity*com;
 					if(cat==category[0]){
-						com=new phone;
+						com=new phone();
+					}else if(cat==category[1]){
+						com=new clothes();
+					}else if(cat==category[2]){
+						com=new swatch();
+						com->load(file);
+						commodities[cat].push_back(com);
 					}
-					if(cat==category[1]){
-						com=new clothes;
-					}
-					if(cat==category[2]){
-						com=new swatch;
-					}
-					com->load(file);
-					commodities[cat].push_back(com);
-					
-				}
 			}
 		}
-		}
+	}
+} 
 
     /*
      * Print the full information of the commodities inside the list
@@ -455,11 +456,11 @@ public:
     void showCommoditiesDetail() {
     	int no=1;
     	for(auto & entry : commodities){
-    		cout<<entry.first<<"type"<<endl;
-			vector<Commodity*>&list=entry.second;
-			for(auto it:list){
+    		cout<<entry.first<<":"<<endl;
+			vector<Commodity*>& list=entry.second;
+			for(auto item:list){
 				cout<<no<<".  ";
-				it->detail();
+				item->detail();
 				no++;
 			}
 			cout<<endl; 
@@ -476,10 +477,10 @@ public:
     void showCommoditiesName() {
 		int no=1;
 		for(auto & entry : commodities){
-			cout<<entry.first<<"type"<<endl;
+			cout<<entry.first<<":"<<endl;
 			vector<Commodity*>&list=entry.second;
-			for(auto it:list){
-				cout<<no<<".  "<<it->getName()<<endl;
+			for(auto item:list){
+				cout<<no<<".  "<<item->getName()<<endl;
 				no++;
 			}
 			cout<<endl;
@@ -540,7 +541,7 @@ public:
      * RETURN: None
      */
     void add(Commodity* newCommodity,string& cat) {
-		commodities[cat].push_back(new Commodity);
+		commodities[cat].push_back(newCommodity);
     }
 
     /*
@@ -604,7 +605,7 @@ public:
  */
 class ShoppingCart {
 private:
-	
+	unordered_map<string, pair<Commodity*, int>> cart;
 public:
 
     /*
@@ -615,7 +616,12 @@ public:
      * OUTPUT: None.
      */
     void push(Commodity* entry) {
-	
+		if(cart.count(entry->getName())){
+			cart[entry->getName()].second++;
+		}else{
+			cart[entry->getName()].first = entry;
+			cart[entry->getName()].second = 1;
+		}
     }
 
     /*
@@ -624,6 +630,13 @@ public:
      * OUTPUT: None.
      */
     void showCart() {
+    	int no=1;
+    	for(auto& item : cart){
+    		pair<Commodity*, int>& entry = item.second;
+    		cout<<no<<". "<<endl;
+    		entry.first->detail(entry.second);
+    		no++;
+		}
 	
     }
 
@@ -633,7 +646,7 @@ public:
      * OUTPUT: Integer. The cart size.
      */
     int size() {
-	
+    	return (int) cart.size();
     }
 
     /*
@@ -642,7 +655,11 @@ public:
      * OUTPUT: None.
      */
     void remove(int index) {
-	
+		auto item = cart.begin();
+		for(int i = 0 ; i < index; i++){
+			item++;
+		}
+		cart.erase(item);
     }
 
     /*
@@ -652,6 +669,14 @@ public:
      * OUTPUT: Integer. The total price.
      */
     int checkOut() {
+    	int total_price = 0;
+    	for(auto& item : cart){
+    		pair<Commodity*, int>& entry = item.second;
+    		total_price += entry.first->getPrice() * entry.second;
+		}
+		
+		cart.clear();
+		return total_price;
 		
     }
 
@@ -661,7 +686,7 @@ public:
      * OUTPUT: Bool. True if the cart is empty, otherwise false.
      */
     bool empty() {
-	
+		return cart.empty();
     }
 };
 
@@ -678,84 +703,42 @@ private:
     enum SMode {OPENING, DECIDING, SHOPPING, CART_CHECKING, CHECK_OUT, MANAGING, CLOSE} storeStatus;
     CommodityList commodityList;
     ShoppingCart cart;
+    
+      /*
+       * You should finish this method, because you need to identify the type of commodity, and instantiate a
+       * corresponding derived commodity class here.
+       */
     void commodityInput() {
     	Commodity*newCom;
-    	string name,detail,kind,color,size,material,color1;
-		int price,pixel,capacity,monitor,weight;
-    	int d=0;
+    	
+    	vector<string> category = commodityList.getCategory();
+    	
         cout << "Which type of commodity you want to add?" << endl;
-        cout<<"1.Phone"<<"   "<<"2.Clothes"<<"   "<<"3.Swatch"<<endl;
-		cin>>d;
+        cout<<"1.Phone"<<"   "<<"2.Clothes"<<"    "<<"3.Swatch"<<endl;
+		
+		int d = InputHandler::getInput(3);
 		if(d==1)
 		{
-			
-			cout << "Please input the commodity name:" << endl;
-        	name = InputHandler::readWholeLine();
-        	cout << "Please input the commodity price:" << endl;
-        	price = InputHandler::numberInput();
-       		cout << "Please input the detail of the commodity:" << endl;
-       	 	detail = InputHandler::readWholeLine();
-			cout<<"What is the pixel of the phone:"<<endl;
-			pixel=InputHandler::numberInput();cout<<"¸U"<<endl; 
-			cout<<"What is the capacity of the phone:"<<endl;
-			capacity=InputHandler::numberInput();
-			cout<<"What is the size of the phone:"<<endl;
-			monitor=InputHandler::numberInput();
-			newCom = new Commodity(price,name,detail);
-	        if (commodityList.isExist(newCom)) {
-	            cout << "[WARNING] " << name << " is exist in the store. If you want to edit it, please delete it first" << endl;
-	        } else {
-	            commodityList.add(newCom);
-		   }
+			newCom = new phone();
 	        
 		}
 		else if(d==2)
 		{
-			cout << "Please input the commodity name:" << endl;
-        	name = InputHandler::readWholeLine();
-        	cout << "Please input the commodity price:" << endl;
-        	price = InputHandler::numberInput();
-       		cout << "Please input the detail of the commodity:" << endl;
-       	 	detail = InputHandler::readWholeLine();
-			cout<<"What is the kind of the clothes:"<<endl;
-			kind= InputHandler::readWholeLine();
-			cout<<"What is the color of the clothes:"<<endl;
-			color=InputHandler::readWholeLine();
-			cout<<"What is the size of the clothes:"<<endl;
-			size=InputHandler::readWholeLine();
-			newCom = new Commodity;
-	        if (commodityList.isExist(newCom)) {
-	            cout << "[WARNING] " << name << " is exist in the store. If you want to edit it, please delete it first" << endl;
-	        } else {
-	            commodityList.add(newCom);
-		   }
+			newCom = new clothes();
 			
+		}else if(d==3){
+			newCom = new swatch();
 		}
-		else if(d==3)
-		{
-			cout << "Please input the commodity name:" << endl;
-        	name = InputHandler::readWholeLine();
-        	cout << "Please input the commodity price:" << endl;
-        	price = InputHandler::numberInput();
-       		cout << "Please input the detail of the commodity:" << endl;
-       	 	detail = InputHandler::readWholeLine();
-       	 	cout<<"What is the material of the swatch:"<<endl;
-			material=InputHandler::readWholeLine();
-			cout<<"What is the color of the swatch:"<<endl;
-			color1=InputHandler::readWholeLine();
-			cout<<"What is the weight of the swatch:"<<endl;
-			weight=InputHandler::numberInput();
-			newCom = new Commodity;
-	        if (commodityList.isExist(newCom)) {
-	            cout << "[WARNING] " << name << " is exist in the store. If you want to edit it, please delete it first" << endl;
-	        } else {
-	            commodityList.add(newCom);
-		   }
+	
+		newCom->userSpecifiedCommodity();
+		
+		if(commodityList.isExist(newCom)){
+			cout<<"[WARNING]"<<newCom->getName()
+				<<" is exist in the store.If you want to edit it, please delete it first"<<endl;
+		}else{
+			commodityList.add(newCom, category[d - 1]);
 		}
-        /*
-         * You should finish this method, because you need to identify the type of commodity, and instantiate a
-         * corresponding derived commodity class here.
-         */
+      
 
     }
 
@@ -900,7 +883,7 @@ private:
 
             if (choice == 1) {
                 int amount = cart.checkOut();
-                cout << "Total Amount: " << amount << endl;
+                cout << "Total Money: " << amount << endl;
                 cout << "Thank you for your coming!" << endl;
                 cout << "------------------------------" << endl << endl;
             }
